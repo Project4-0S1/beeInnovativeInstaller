@@ -42,7 +42,29 @@ create_env_file() {
     done
 }
 
-TOTAL_STEPS=8
+create_systemd_service() {
+    local service_file="/etc/systemd/system/beeInnovativeClient.service"
+    cat <<EOF > $service_file
+[Unit]
+Description=BeeInnovative Client Service
+After=network.target
+
+[Service]
+ExecStart=/opt/beeInnovativeClient/start.sh
+WorkingDirectory=/opt/beeInnovativeClient
+Restart=always
+User=root
+StandardOutput=append:/var/log/beeInnovativeClient.log
+StandardError=append:/var/log/beeInnovativeClient.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    systemctl daemon-reload
+    systemctl enable beeInnovativeClient.service
+}
+
+TOTAL_STEPS=9
 
 # Ensure Git is installed
 step 1 $TOTAL_STEPS "Checking for Git"
@@ -86,5 +108,11 @@ create_env_file "$@"
 printf "\r"
 printf "\r\n"
 
-echo "[Step 8/$TOTAL_STEPS] Installation completed. You can start the app with:"
-echo "python /opt/beeInnovativeClient/app.py"
+# Create and start systemd service
+step 8 $TOTAL_STEPS "Creating and starting systemd service"
+create_systemd_service
+printf "\r"
+printf "\r\n"
+
+echo "[Step 9/$TOTAL_STEPS] Installation completed. You can start the app with:"
+echo "systemctl start beeInnovativeClient.service"
