@@ -8,5 +8,5 @@ apt -y install wget && cd /tmp && wget https://raw.githubusercontent.com/Project
 ```
 
 ### Important:
-Make sure to replace the `REPLACEME` fields with your actual `CLIENT_ID` and `CLIENT_SECRET` values before running the script.
+Make sure to replace the `REPLACEME` fields with your actual `CLIENT_ID`, `CLIENT_SECRET`, `LATTITUDE` and `LONGITUDE` and if using another Auth0 account change the `AUTH_URL` value aswell before running the script.
 
