@@ -64,11 +64,11 @@ EOF
     systemctl enable beeInnovativeClient.service
 }
 
-TOTAL_STEPS=9
+TOTAL_STEPS=10
 
 # Ensure Git is installed
 step 1 $TOTAL_STEPS "Checking for Git"
-(sudo apt update -qq > /dev/null 2>&1 && sudo apt install -y -qq git > /dev/null 2>&1) & spinner $!
+(sudo apt update -qq > /dev/null 2>&1 && sudo apt install -y -qq git cron > /dev/null 2>&1) & spinner $!
 printf "\r"
 printf "\r\n"
 
@@ -114,5 +114,12 @@ create_systemd_service
 printf "\r"
 printf "\r\n"
 
-echo "[Step 9/$TOTAL_STEPS] Installation completed. You can start the app with:"
+# Add cron job
+step 9 $TOTAL_STEPS "Adding cron job"
+(crontab -l 2>/dev/null | grep -v "/opt/beeInnovativeClient/publishDetections.py"; echo "*/2 * * * * cd /opt/beeInnovativeClient && /opt/beeInnovativeClient/client/bin/python3 /opt/beeInnovativeClient/publishDetections.py") | crontab -
+printf "\r"
+printf "\r\n"
+
+
+echo "[Step 10/$TOTAL_STEPS] Installation completed. You can start the app with:"
 echo "systemctl start beeInnovativeClient.service"
